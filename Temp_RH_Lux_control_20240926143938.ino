@@ -5,7 +5,9 @@
 
 #define DHTPIN 5
 #define DHTTYPE DHT11
-#define LED 13 //Pin of output
+#define TestPin1 13 //Pin of output
+#define TestPin2 7
+#define TestPin3 12
 //#define DHTTYPE DHT22   // DHT 22 if series is DHT22
 //#define DHTTYPE DHT21   // DHT 21
 DHT dht(DHTPIN, DHTTYPE);
@@ -14,8 +16,8 @@ Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591);
 void configureSensor(void)
 {
   // You can change the gain on the fly, to adapt to brighter/dimmer light situations
-  tsl.setGain(TSL2591_GAIN_LOW);    // 1x gain (bright light)
-  //tsl.setGain(TSL2591_GAIN_MED);      // 25x gain
+  //tsl.setGain(TSL2591_GAIN_LOW);    // 1x gain (bright light)
+  tsl.setGain(TSL2591_GAIN_MED);      // 25x gain
   //tsl.setGain(TSL2591_GAIN_HIGH);   // 428x gain
   
   // Changing the integration time gives you a longer time over which to sense light
@@ -72,9 +74,11 @@ void setup()
 {
   Serial.begin(9600);
   Serial.println("DHT11 test!");
-  Serial.println("Starting Adafruit TSL2591 Test!");
+  Serial.println("TSL2591 Test!");
   dht.begin();  //Begin DHT11 Sensor
-  pinMode(LED,OUTPUT);
+  pinMode(TestPin1,OUTPUT);
+  pinMode(TestPin2,OUTPUT);
+  pinMode(TestPin3,OUTPUT);
 
   if (tsl.begin()) 
   {
@@ -102,21 +106,27 @@ void loop()
   //Print result
   Serial.print("Humidity: ");
   Serial.print(h);
-  Serial.print(" %\t");
+  Serial.println(" %\t");
+
   Serial.print("Temperature: ");
   Serial.print(t);
   Serial.println(" *C ");
 
   Serial.print("Lux: ");
   Serial.print(x);
-  Serial.print(" lumen\t  ");
+  Serial.println(" lumen\t  ");
 
-  //Turn On the green LED if RH is >70%
-  if (h >= 80 || x >= 80){
+  Serial.println("  ");
+
+  //Turn On the green TestPin1 if RH is >70%
+  if (h >= 80 || x <= 1500 || t >= 40 ) { // (h >= 80 || x <= 1000) for testing logic
   // use h = 60 for debug
-    digitalWrite (LED,HIGH);
+    digitalWrite (TestPin1,HIGH);
+    //digitalWrite (TestPin2,HIGH);
+    digitalWrite (TestPin3,HIGH);
   } else {
-    digitalWrite (LED,LOW);
+    digitalWrite (TestPin1,LOW);
+    //digitalWrite (TestPin2,LOW);
+    digitalWrite (TestPin3,LOW);
   }
- 
 }
